@@ -1,27 +1,38 @@
-export default class Character {
-  static typeContainer = [
-    'Boweman',
-    'Swordsman',
-    'Magician',
-    'Daemon',
-    'Undead',
-    'Zombie',
-  ];
+const types = [
+    'Bowman', 'Swordsman', 'Magician', 'Daemon', 'Undead', 'Zombie',
+];
 
-  constructor(name, type) {
-    // имя должно быть строкой от 2 до 10 символов
-    if (typeof name === 'string' && name.length >= 2 && name.length <= 10) {
-      this.name = name;
-    } else {
-      throw new Error("the character's name must contain letters from 2 to 10 characters");
+export default class Character {
+    constructor(name, type, attack, defence) {
+        if (name.length < 2 || name.length > 10) {
+            throw new Error('Invalid name length');
+        }
+        if (!types.includes(type)) {
+            throw new Error('Invalid character type');
+        }
+        this.name = name;
+        this.type = type;
+        this.health = 100;
+        this.level = 1;
+        this.attack = attack;
+        this.defence = defence;
     }
-    // тип должен быть один из 6-ти предложенных
-    if (Character.typeContainer.includes(type)) {
-      this.type = type;
-    } else {
-      throw new Error('Please select one of the available classes: Boweman, Swordsman, Magician, Daemon, Undead, Zombie');
+
+    levelUp() {
+        if (this.health > 0) {
+            this.level += 1;
+            this.attack *= 1.2;
+            this.defence *= 1.2;
+            this.health = 100;
+        } else {
+            throw new Error('You cannot raise the level with zero health');
+        }
     }
-    this.health = 100;
-    this.level = 1;
-  }
+
+    damage(points) {
+        this.health -= points * (1 - this.defence / 100);
+        if (this.health < 0) {
+            this.health = 0;
+        }
+    }
 }
